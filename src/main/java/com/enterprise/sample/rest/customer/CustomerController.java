@@ -1,7 +1,5 @@
 package com.enterprise.sample.rest.customer;
 
-import com.enterprise.pact.framework.annotation.AutoGeneratePact;
-import com.enterprise.pact.framework.annotation.PactScenario;
 import com.enterprise.sample.rest.customer.dto.CreateCustomerRequest;
 import com.enterprise.sample.rest.customer.dto.CustomerResponse;
 import org.springframework.http.HttpStatus;
@@ -21,7 +19,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/customers")
-@AutoGeneratePact(consumer = "consumer-driven-contract-testing", provider = "pact-rest-h2-sample")
 public class CustomerController {
     private final CustomerRepository repository;
 
@@ -30,7 +27,6 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    @PactScenario(value = "read-customer-by-id", providerState = "customer exists in H2")
     public ResponseEntity<CustomerResponse> findById(@PathVariable UUID id, @RequestParam(defaultValue = "true") boolean includeLinks) {
         return repository.findById(id)
                 .map(customer -> ResponseEntity.ok(toResponse(customer, includeLinks)))
@@ -39,7 +35,6 @@ public class CustomerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PactScenario(value = "create-customer", providerState = "customer email is unique")
     public CustomerResponse create(@RequestBody CreateCustomerRequest request) {
         CustomerEntity entity = new CustomerEntity(UUID.randomUUID(), request.name(), request.email(), request.tier(), LocalDate.now());
         repository.save(entity);

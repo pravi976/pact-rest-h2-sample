@@ -5,8 +5,15 @@ pluginManagement {
     }
 }
 
-dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { mavenCentral() } }
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories { mavenCentral() }
+}
 
 rootProject.name = 'pact-rest-h2-sample'
-includeBuild('../pact-framework')
 
+def cdcFramework = file('../consumer-driven-contract-testing')
+if (!cdcFramework.exists()) {
+    cdcFramework = file('consumer-driven-contract-testing')
+}
+includeBuild(cdcFramework)
